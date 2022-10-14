@@ -3,9 +3,9 @@
 
 // Debug Control
 #define DEBUG 0
-#define PLX 0
+#define PLX 1
 
-#if DEBUG == 0
+#if DEBUG == 1
 #define debugln(x) Serial.println(x)
 #define output(x) Serial.println(x) // Print newline char when debugging for clarity
 #define debugDelay(x) delay(x) // For Debug Serial Monitor Delay
@@ -17,7 +17,7 @@
 
 #if PLX == 1
 #define PLXout(x) Serial.print(x)
-#define PLXoutln (x) Serial.println(x)
+#define PLXoutln(x) Serial.println(x)
 #else
 #define PLXout(x)
 #define PLXoutln(x)
@@ -61,7 +61,8 @@ void setup()
   Serial.begin(9600);
 
   PLXoutln("CLEARDATA");
-  PLXoutln("LABEL,Time, Sensor Output, Drive Ratio, Error");
+  PLXoutln("LABEL, Time, Time From Start, Sensor Output, Drive Ratio, Error");
+  PLXoutln("RESETTIMER");
 
   setupRSLK();
   /* Left button on Launchpad */
@@ -79,7 +80,7 @@ void floorCalibration() {
   String btnMsg = "Push left button on Launchpad to begin calibration.\n";
   btnMsg += "Make sure the robot is on the floor away from the line.\n";
   /* Wait until button is pressed to start robot */
-  waitBtnPressed(LP_LEFT_BTN, btnMsg, RED_LED);
+  //waitBtnPressed(LP_LEFT_BTN, btnMsg, RED_LED);
 
   delay(1000);
 
@@ -90,7 +91,7 @@ void floorCalibration() {
   btnMsg = "Push left button on Launchpad to begin line following.\n";
   btnMsg += "Make sure the robot is on the line.\n";
   /* Wait until button is pressed to start robot */
-  waitBtnPressed(LP_LEFT_BTN, btnMsg, RED_LED);
+  //waitBtnPressed(LP_LEFT_BTN, btnMsg, RED_LED);
   delay(1000);
 
   enableMotor(BOTH_MOTORS);
@@ -142,7 +143,7 @@ void loop() {
   double DRnow = DR + adjustment;
   DRnow = constrain(DRnow,0 ,1);
   
-  debug("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
+  debugln("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
   debugln(" LSpeed = " + String(DRnow*Speed) + " RSpeed = " + String((1-DRnow)*Speed));
 
 //    setMotorSpeed(LEFT_MOTOR, LSpeed);
@@ -166,10 +167,20 @@ void loop() {
 //    setMotorSpeed(RIGHT_MOTOR, normalSpeed);
 //  }
 
-// PLX Data Out
-
-PLXoutln(String(millis()) + "," + String(linePos) + "," + String(DRnow) + "," + String(error))
+  // PLX Data Out
+  volatile unsigned long timeNow = millis();
+  PLXout("DATA, TIME,");
+  PLXout(timeNow);
+  PLXout(" ,");
+  PLXout(linePos);
+  PLXout(" ,");
+  PLXout(DRnow);
+  PLXout(" ,");
+  PLXout(error);
+  PLXoutln(" ,");
+  delay(500);
 }
+
 
 
 
