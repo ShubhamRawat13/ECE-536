@@ -1,6 +1,19 @@
 #include "SimpleRSLK.h"
 #include "Encoder.h"
 
+// Debug Control
+#define DEBUG 0
+
+#if DEBUG == 1
+#define debugln(x) Serial.println(x)
+#define output(x) Serial.println(x) // Print newline char when debugging for clarity
+#define debugDelay(x) delay(x) // For Debug Serial Monitor Delay
+#else
+#define debugln(x)
+#define output(x) Serial.print(x) // Don't print newline char when not debugging
+#define debugDelay(x)
+#endif
+
 void setupEncoder  ( uint8_t   ela_pin, uint8_t   elb_pin, uint8_t   era_pin, uint8_t   erb_pin );  // initalize the encoders
 
 #define driveSpeed 20      // This was a good motor speed to complete this lab
@@ -117,8 +130,8 @@ void loop() {
   double DRnow = DR + adjustment;
   DRnow = constrain(DRnow,0 ,1);
   
-  Serial.print("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
-  Serial.println(" LSpeed = " + String(DRnow*Speed) + " RSpeed = " + String((1-DRnow)*Speed));
+  debug("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
+  debugln(" LSpeed = " + String(DRnow*Speed) + " RSpeed = " + String((1-DRnow)*Speed));
 
 //    setMotorSpeed(LEFT_MOTOR, LSpeed);
 //    setMotorSpeed(RIGHT_MOTOR, RSpeed );
