@@ -26,7 +26,7 @@ int error;
 double adjustment;
 
 // Range of output/ max error
-double Ke = 0.0004; 
+double Ke = 0.5/3500; 
 double DR = 0.5;
 /* Valid values are either:
     DARK_LINE  if your floor is lighter than your line
@@ -100,8 +100,8 @@ void loop() {
   readLineSensor(sensorVal);
   readCalLineSensor(sensorVal, sensorCalVal, sensorMinVal, sensorMaxVal, lineColor);
 
+  //could use average
   uint32_t linePos = getLinePosition(sensorCalVal, lineColor);
-  
   //start P logic
   
   error =   linePos-center;
@@ -114,17 +114,18 @@ void loop() {
 // RSpeed = constrain(RSpeed - Ke * error, 0, 20);
 // LSpeed = constrain(LSpeed + Ke * error, 0, 20);
 
- DR = constrain(DR + adjustment,0.2 ,0.8);
+  double DRnow = DR + adjustment;
+  DRnow = constrain(DRnow,0 ,1);
   
-  Serial.print("linePos = " + String(linePos) + " DR = " + String(DR) + " Error = " + String(error));
-  Serial.println(" LSpeed = " + String(DR*Speed) + " RSpeed = " + String((1-DR)*Speed));
+  Serial.print("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
+  Serial.println(" LSpeed = " + String(DRnow*Speed) + " RSpeed = " + String((1-DRnow)*Speed));
 
 //    setMotorSpeed(LEFT_MOTOR, LSpeed);
 //    setMotorSpeed(RIGHT_MOTOR, RSpeed );
 //  setMotorSpeed(LEFT_MOTOR, constrain((DR) * Speed, 10, Speed));
 //  setMotorSpeed(RIGHT_MOTOR, constrain((1-DR) * Speed, 15, Speed));
-  setMotorSpeed(LEFT_MOTOR, ((DR) * Speed));
-  setMotorSpeed(RIGHT_MOTOR, ((1-DR) * Speed));
+  setMotorSpeed(LEFT_MOTOR, ((DRnow) * Speed));
+  setMotorSpeed(RIGHT_MOTOR, ((1-DRnow) * Speed));
 
   
 //  if (linePos > 0 && linePos < 3000) { 
