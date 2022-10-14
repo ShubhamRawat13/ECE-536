@@ -3,6 +3,7 @@
 
 // Debug Control
 #define DEBUG 0
+#define PLX 0
 
 #if DEBUG == 1
 #define debugln(x) Serial.println(x)
@@ -12,6 +13,14 @@
 #define debugln(x)
 #define output(x) Serial.print(x) // Don't print newline char when not debugging
 #define debugDelay(x)
+#endif
+
+#if PLX == 1
+#define PLXout(x) Serial.print(x)
+#define PLXoutln (x) Serial.println(x)
+#else
+#define PLXout(x)
+#define PLXoutln(x)
 #endif
 
 void setupEncoder  ( uint8_t   ela_pin, uint8_t   elb_pin, uint8_t   era_pin, uint8_t   erb_pin );  // initalize the encoders
@@ -50,6 +59,9 @@ uint8_t lineColor = DARK_LINE;
 void setup()
 {
   Serial.begin(9600);
+
+  PLXoutln("CLEARDATA");
+  PLXoutln("LABEL,Time, Sensor Output, Drive Ratio, Error");
 
   setupRSLK();
   /* Left button on Launchpad */
@@ -141,6 +153,8 @@ void loop() {
   setMotorSpeed(RIGHT_MOTOR, ((1-DRnow) * Speed));
 
   
+
+  
 //  if (linePos > 0 && linePos < 3000) { 
 //    setMotorSpeed(LEFT_MOTOR, normalSpeed);
 //    setMotorSpeed(RIGHT_MOTOR, fastSpeed);
@@ -151,6 +165,10 @@ void loop() {
 //    setMotorSpeed(LEFT_MOTOR, normalSpeed);
 //    setMotorSpeed(RIGHT_MOTOR, normalSpeed);
 //  }
+
+// PLX Data Out
+
+PLXoutln(String(millis()) + "," + String(linePos) + "," + String(DRnow) + "," + String(error))
 }
 
 
