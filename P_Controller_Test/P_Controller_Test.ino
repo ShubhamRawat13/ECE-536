@@ -5,7 +5,7 @@
 #define DEBUG 0
 #define PLX 0
 
-#if DEBUG == 1
+#if DEBUG == 0
 #define debugln(x) Serial.println(x)
 #define output(x) Serial.println(x) // Print newline char when debugging for clarity
 #define debugDelay(x) delay(x) // For Debug Serial Monitor Delay
@@ -83,9 +83,9 @@ void floorCalibration() {
 
   delay(1000);
 
-  Serial.println("Running calibration on floor");
+  debugln("Running calibration on floor");
   simpleCalibrate();
-  Serial.println("Reading floor values complete");
+  debugln("Reading floor values complete");
 
   btnMsg = "Push left button on Launchpad to begin line following.\n";
   btnMsg += "Make sure the robot is on the line.\n";
