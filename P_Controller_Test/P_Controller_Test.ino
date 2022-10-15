@@ -115,6 +115,14 @@ void simpleCalibrate() {
 
   bool isCalibrationComplete = false;
 
+uint32_t getPosition(){
+  uint32_t linePos;
+  readLineSensor(sensorVal);
+  readCalLineSensor(sensorVal, sensorCalVal, sensorMinVal, sensorMaxVal, lineColor);
+  //could use average
+  return getLinePosition(sensorCalVal, lineColor);
+}
+
 void loop() {
 
   /* Run this setup only once */
@@ -123,15 +131,19 @@ void loop() {
     isCalibrationComplete = true;
   }
 
-  readLineSensor(sensorVal);
-  readCalLineSensor(sensorVal, sensorCalVal, sensorMinVal, sensorMaxVal, lineColor);
-
-  //could use average
-  uint32_t linePos = getLinePosition(sensorCalVal, lineColor);
+  
+  uint32_t linePos = getPosition();
   //start P logic
+  double correction = 1000;
+  
   
   error =   linePos-center;
-
+  if (error > 0){
+    error = error - correction;
+  }
+  else{
+    error = error + correction;
+  }
   adjustment = error*Ke;
   
 //  RSpeed = constrain(RSpeed - Ke * error, 0, 20);
