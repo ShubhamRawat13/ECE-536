@@ -134,9 +134,9 @@ void loop() {
   
   uint32_t linePos = getPosition();
   //start P logic
-  double correction = 1000;
+  //double correction = 1000;  
   
-  
+  /*
   error =   linePos-center;
   if (error > 0){
     error = error - correction;
@@ -144,6 +144,7 @@ void loop() {
   else{
     error = error + correction;
   }
+  */
   adjustment = error*Ke;
   
 //  RSpeed = constrain(RSpeed - Ke * error, 0, 20);
