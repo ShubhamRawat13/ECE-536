@@ -1,5 +1,6 @@
 #include "SimpleRSLK.h"
 #include "Encoder.h"
+#include "math.h"
 
 // Debug Control
 #define DEBUG 0
@@ -133,19 +134,7 @@ void loop() {
 
   
   uint32_t linePos = getPosition();
-  //start P logic
-  //double correction = 1000;  
-  
-  /*
-  error =   linePos-center;
-  if (error > 0){
-    error = error - correction;
-  }
-  else{
-    error = error + correction;
-  }
-  */
-  adjustment = error*Ke;
+  //start P logic 
   
 //  RSpeed = constrain(RSpeed - Ke * error, 0, 20);
 //  LSpeed = constrain(LSpeed + Ke * error, 0, 20);
@@ -153,7 +142,7 @@ void loop() {
 // RSpeed = constrain(RSpeed - Ke * error, 0, 20);
 // LSpeed = constrain(LSpeed + Ke * error, 0, 20);
 
-  double DRnow = DR + adjustment;
+  double DRnow = DR + d_hat*sin(x);
   DRnow = constrain(DRnow,0 ,1);
   
   debugln("linePos = " + String(linePos) + " DR = " + String(DRnow) + " Error = " + String(error));
