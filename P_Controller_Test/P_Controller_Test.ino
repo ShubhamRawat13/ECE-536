@@ -32,7 +32,7 @@ const int trigPin = 32;  //This is Port Pin 3.5 on the MSP432 Launchpad
 const int echoPin = 33; //This is Port Pin 5.1 on the MSP432 Launchpad
 
 int lWheelSpeed = driveSpeed  ;
-int rWheelSpeed = driveSpeed+1 ;
+int rWheelSpeed = driveSpeed+1 ;      // Why was 1 added to driveSpeed?
 
 uint16_t sensorVal[LS_NUM_SENSORS];
 uint16_t sensorCalVal[LS_NUM_SENSORS];
